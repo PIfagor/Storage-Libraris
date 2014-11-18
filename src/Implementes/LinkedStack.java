@@ -3,7 +3,7 @@ package Implementes;
 import java.util.EmptyStackException;
 import java.util.Iterator;
 
-import Interfaces.Stack;
+
 
 /**
  * 

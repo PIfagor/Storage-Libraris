@@ -2,7 +2,7 @@ package Implementes;
 
 import java.util.EmptyStackException;
 
-import Interfaces.Stack;
+
 
 /**
  * 
@@ -129,7 +129,6 @@ public class ArrayStack<Data> implements Stack<Data>, java.lang.Iterable<Data> {
 
 	@Override
 	public java.util.Iterator<Data> iterator() {
-
 		return new IterateArray();
 	}
 }

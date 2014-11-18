@@ -2,7 +2,6 @@ package Implementes;
 
 import java.util.Iterator;
 
-import Interfaces.Stack;
 
 /**
  * 
@@ -14,12 +13,14 @@ import Interfaces.Stack;
 public class Bag<Data> implements java.lang.Iterable<Data> {
 	private Stack st;
 
-	public Bag(int mode) {
-		if (mode == 0)
+	public Bag(Storage mode) {
+		if (mode == Storage.ARRAY)
 			st = new ArrayStack<>();
 		else
 			st = new LinkedStack<>();
 	}
+
+
 
 	public void add(Data d) {
 		st.push(d);

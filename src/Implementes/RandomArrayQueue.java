@@ -1,64 +1,54 @@
 package Implementes;
 
 import java.util.EmptyStackException;
-import Interfaces.Deque;
+import java.util.Iterator;
+import java.util.Random;
 
-/**
- * 
- * @author Wise
- * 
- * @param <Data>
- */
-public class ArrayDeque<Data> implements Deque<Data>, java.lang.Iterable<Data> {
+import Interfaces.RandomQueue;
 
-	public ArrayDeque(int size) {
+public class RandomArrayQueue<Data> implements RandomQueue<Data>, java.lang.Iterable<Data> {
+
+	/**
+	 * @author Wise
+	 * @param args
+	 */
+
+	
+
+	public RandomArrayQueue(int size) {
 		if (size > 0) {
 			totalSize = size;
 			data = (Data[]) new Object[totalSize];
+			randomGenerator = new Random();
 		} else
 			throw new EmptyStackException();
 	};
 
-	public ArrayDeque() {
-		totalSize = defaultSize;
-		data = (Data[]) new Object[totalSize];
+	public RandomArrayQueue() {
+		this(defaultSize);
 	}
 
 	@Override
-	public void addFirst(Data d) {
-		if(bottom<=0)
-			enlargeReverse();
-			data[bottom--] = d;
-	}
-
-	@Override
-	public void addLast(Data d) {
+	public void enqueue(Data d) {
 		if (needEnlarge()) {
 			enlarge();
 		}
-		data[++currentSize+pocket] = d;
-
+		data[++currentSize] = d;
+		if(totalSize>2)
+			{
+				int rand = randomGenerator.nextInt(currentSize-bottom)+bottom;
+				swap(rand,currentSize);
+			}
 	}
-
-	@Override
-	public Data peekFirst() {
-		if (!isEmpty()) {
-			return data[bottom + 1];
-		}
-		throw new EmptyStackException();
+	
+	private void swap(int i,int j)
+	{
+		Data temp = data[i];
+		data[i]=data[j];
+		data[j]=data[i];
 	}
-
 	@Override
-	public Data peekLast() {
-		if (!isEmpty()) {
-			return data[currentSize];
-		}
-		throw new EmptyStackException();
-	}
-
-	@Override
-	public Data getFirst() {
-
+	public Data dequeue() {
 		if (!isEmpty()) {
 			if (needCompress()) {
 				compress();
@@ -69,48 +59,39 @@ public class ArrayDeque<Data> implements Deque<Data>, java.lang.Iterable<Data> {
 	}
 
 	@Override
-	public Data getLast() {
+	public Data get() {
 		if (!isEmpty()) {
-			return data[currentSize--];
+			if (needCompress()) {
+				compress();
+			}
+			int rand = randomGenerator.nextInt(currentSize-bottom)+bottom;
+			return data[rand];
 		}
 		throw new EmptyStackException();
+		
 	}
 
 	@Override
 	public int size() {
-		// TODO Auto-generated method stub
+
 		return currentSize - bottom;
 	}
 
 	@Override
 	public boolean isEmpty() {
-		// TODO Auto-generated method stub
+
 		return currentSize == bottom;
 	}
 
 	private Data[] data;
-	private int defaultSize = 21;
+	private static int defaultSize = 21;
 	private int totalSize = 0;
 	private int bottom = -1;
 	private int currentSize = -1;
 	private boolean elraged = false;
-	private int pocket = 0;
-	
-	private void enlargeReverse()
-	{
-		pocket = 3;
-		Data[] temp = (Data[]) new Object[totalSize+pocket];
-		for (int i = 0; i <= currentSize; i++) {
-			temp[i+pocket] = data[bottom + i];
-		}
-		bottom = pocket;
-		currentSize += pocket;
-		data = temp;
-	}
-	
+	private Random randomGenerator ;
 	private void enlarge() {
 		totalSize *= 2;
-		pocket =0;
 		if (bottom < 0)
 			bottom++;
 		currentSize -= bottom;
@@ -148,14 +129,13 @@ public class ArrayDeque<Data> implements Deque<Data>, java.lang.Iterable<Data> {
 	private boolean needCompress() {
 		if (totalSize / 4 == (currentSize - bottom) && elraged)
 			return true;
-
 		return false;
 	}
 
 	private class IterateArray<Data> implements java.util.Iterator<Data> {
 
 		private int bot = bottom;
-		private int current = currentSize+pocket;
+		private int current = currentSize;
 
 		@Override
 		public boolean hasNext() {
@@ -175,6 +155,7 @@ public class ArrayDeque<Data> implements Deque<Data>, java.lang.Iterable<Data> {
 
 	@Override
 	public java.util.Iterator<Data> iterator() {
+
 		return new IterateArray();
 	}
 
